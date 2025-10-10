@@ -15,7 +15,7 @@ function App() {
   return (
     <div>
       <h1>Da finance tracker</h1>
-        <p>Hello world, this means the React frontend is working...</p> 
+        <p>{message}</p> 
     </div>
   );
 }
