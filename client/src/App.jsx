@@ -1,4 +1,8 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState} from "react"
+import { BrowserRouter, Routes, Route} from "react-router-dom"
+
+import Home from './Views/Home'
+import History from './Views/History'
 
 
 function App() {
@@ -13,11 +17,13 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <h1>Da finance tracker</h1>
-        <p>Hello world, this means the React frontend is working...</p> 
-    </div>
-  );
+    <BrowserRouter>
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/history" element={<History />} />
+    </Routes>
+    </BrowserRouter>
+  )
 }
-export default App;
+export default App
 //original stuff archived incase
