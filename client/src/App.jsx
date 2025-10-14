@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route} from "react-router-dom"
 
 import Home from './Views/Home'
 import History from './Views/History'
+import Transactions from './Views/Transactions'
+import Settings from './Views/Settings'
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
     <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/history" element={<History />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/settings" element={<Settings />} />
     </Routes>
     </BrowserRouter>
   )
