@@ -1,4 +1,10 @@
-import {useEffect, useState} from "react";
+import {useEffect, useState} from "react"
+import { BrowserRouter, Routes, Route} from "react-router-dom"
+
+import Home from './Views/Home'
+import History from './Views/History'
+import Transactions from './Views/Transactions'
+import Settings from './Views/Settings'
 
 
 function App() {
@@ -13,11 +19,15 @@ function App() {
   }, []);
 
   return (
-    <div>
-      <h1>Da finance tracker</h1>
-        <p>{message}</p> 
-    </div>
-  );
+    <BrowserRouter>
+    <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/transactions" element={<Transactions />} />
+        <Route path="/settings" element={<Settings />} />
+    </Routes>
+    </BrowserRouter>
+  )
 }
-export default App;
+export default App
 //original stuff archived incase
