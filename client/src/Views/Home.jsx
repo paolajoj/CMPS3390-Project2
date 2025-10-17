@@ -9,6 +9,10 @@ export default function Home() {
       <Link to="/transactions">Transactions</Link>
       <br />
       <Link to="/settings">Settings</Link>
+      <br />
+      <Link to="/add">Add Transactions</Link>
+      <br />
+      <Link to="/edit">Edit Transactions</Link>
     </div>
   )
 }
