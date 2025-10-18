@@ -14,7 +14,8 @@ createAccount(name)
       return account.name == nameNew
    })
 
-   if (accountChecker == 0)
+
+   if (accountChecker.length == 0)
    {
       const newAccount = {
          name: nameNew,
