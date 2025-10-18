@@ -7,6 +7,7 @@ export default function Transactions() {
 			<h1 className="title">Finance Tracker Add Page</h1>
 			<div className="links">
 			<Link to="/" className="link">Home</Link>
+			<Link to="/Edit" className="link">Edit</Link>
 			</div>
 			</div>
 	       )

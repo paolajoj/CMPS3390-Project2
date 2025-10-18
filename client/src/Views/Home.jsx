@@ -68,9 +68,9 @@ export default function Home() {
 			<Link to="/transactions" className="link">Transactions</Link>
 			<Link to="/settings" className="link">Settings</Link>
 			<Link to="/add" className="link">Add Transactions</Link>
-			<Link to="/edit" className="link">Edit Transactions</Link>
 			</div>
-
+			{/* Account  */}
+			<div className = "account">
 			<input type = "text"
 			value = {accountName}
 			onChange = {handleAccountChange}
@@ -78,14 +78,17 @@ export default function Home() {
 			/>
             <button onClick = {createAccount}> Create account </button>
             <button onClick = {deleteAccount}> Delete account </button>
-
-            <span>
+			</div>
+	{/* Account selection*/}
+	<div className="account-select">
+            <label>
                 Account :
            <select value = {selectedAccount} onChange = {handleAccountSelect}>
                <option value = ""> Select Account </option>
                {AccountOptions()}
             </select>
-            </span>
+            </label>
+			</div>
 			</div>
 	       )
 }

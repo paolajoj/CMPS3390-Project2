@@ -40,7 +40,7 @@ padding: 2em;
 .read-the-docs {
 color: #888;
 }
-
+/*Home Page */
 .home {
 	text-align: center;
 	display: flex;
@@ -53,7 +53,8 @@ color: #888;
 	flex-direction: column;
 	align-items: center;
 	width: 200px;
-	gap: 1rem;
+	gap: 2rem;
+	margin-bottom: 1rem;
 	
 }
 .link {
@@ -71,4 +72,49 @@ color: #888;
 .link:hover {
 	background-color: #0056b3;;
 color: white;
+}
+.account {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	gap: 2rem;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 1rem;
+}
+.account input {
+	padding: 0.4rem 0.6rem;
+		
+}
+.account button {	
+	background-color: #0C699F;
+	color: white;
+       	border-radius: 10px;
+	cursor: pointer;
+	transition: background-color 0.3s;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.account button:hover {
+	background-color: #0056b3;;
+}
+.account-select {
+	display:flex;
+	align-items: center;
+	gap: 1rem;
+	justify-content: center;
+}
+.account-select select {
+	padding: 0.4rem 0.6rem;
+	background-color: #0C699F;
+	cursor: pointer;
+	color:white;
+	
+	
+}
+.account-select select:hover {
+	background-color: #0056b3;;
+}
+.account-select label {
+	font-weight: 600;
+	color: white;
 }
