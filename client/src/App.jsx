@@ -5,7 +5,8 @@ import Home from './Views/Home'
 import History from './Views/History'
 import Transactions from './Views/Transactions'
 import Settings from './Views/Settings'
-
+import Add from './Views/Add'
+import Edit from './Views/Edit'
 
 function App() {
   const [message,setMessage] = useState ("loading........");
@@ -25,6 +26,8 @@ function App() {
         <Route path="/history" element={<History />} />
         <Route path="/transactions" element={<Transactions />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/add" element={<Add />} />
+        <Route path="/edit" element={<Edit />} />
     </Routes>
     </BrowserRouter>
   )
