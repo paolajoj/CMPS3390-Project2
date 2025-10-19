@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom'
 import React, {useState, useEffect} from 'react'
 import '../App.css'
 
-export default function Transactios() {
+export default function Transactions() {
 	const [transactions, setTransactions] = useState([])
 	const [amount, setAmount] = useState('')
 	const [description, setDescription] = useState('')
+	const [type, setType] = useState('Expense')
 // Load saved transactions
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('transactions') || '[]')
@@ -23,10 +24,11 @@ export default function Transactios() {
       alert('Please fill out both fields.')
       return
     }
-    const newTransaction = { amount, description }
+    const newTransaction = { amount, description, type}
     setTransactions([...transactions, newTransaction])
     setAmount('')
     setDescription('')
+    setType('Expense')
   }
 
   // Delete a transaction
@@ -47,7 +49,16 @@ return (
 
       {/* Add Transaction Section */}
       <div className="account" style={{ marginTop: '2rem' }}>
-        <input
+      {/* type */}
+	<select 
+	  value={type}
+          onChange={(e) => setType(e.target.value)}
+   	  style={{ padding: '0.5rem', borderRadius: '5px'}}
+	 >
+	     <option value ="Expense">Expense</option>
+	     <option value ="Income">Income</option>
+	  </select>
+	<input
           type="number"
           placeholder="Amount"
           value={amount}
@@ -70,9 +81,24 @@ return (
         ) : (
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {transactions.map((t, index) => (
-              <li key={index} style={{ marginBottom: '10px' }}>
+              <li 
+		 key={index} 
+		 style={{ 
+		 marginBottom: '5px',
+		 display: 'flex',
+		 gap: '1rem'
+		}}>
                  <strong>${t.amount}</strong> — {t.description}
-                <button
+               <span 
+		style={{
+	    	  color: t.type === 'Income' ? 'green' : 'red',
+		  fontWeight: 'bold',
+	        }}
+		>
+	 	   {t.type} 
+		</span>
+		
+	       <button
                   style={{ marginLeft: '10px' }}
                   onClick={() => deleteTransaction(index)}
                 >
