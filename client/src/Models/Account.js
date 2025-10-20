@@ -1,48 +1,28 @@
-class Account {
-
-constructor()
+class Account
 {
-  this.accounts = []
-  this.uniqueID = 1
+  async getAccounts(){
+    const res = await fetch("http://localhost:3001/api/accounts");
+    const data = await res.json();
+    return data;
+  }
+
+
+  async createAccount(name) {
+    const res = await fetch("http://localhost:3001/api/accounts",{
+      method: "POST",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify({name}),
+    }
+   );
+    return await res.json();
+  }
+
+
+  async deleteAccount(id){
+    await fetch(`http://localhost:3001/api/accounts/${id}`,{
+      method: "DELETE",
+    });
+  }
 }
 
-createAccount(name)
-{
-   const nameNew = name.trim()
-
-   const accountChecker = this.accounts.filter(function(account){
-      return account.name == nameNew
-   })
-
-
-   if (accountChecker.length == 0)
-   {
-      const newAccount = {
-         name: nameNew,
-         id: this.uniqueID++
-      }
-      this.accounts = [...this.accounts, newAccount]
-   }
-   else
-   {
-     alert("This account name already exists")
-   }
-
-}
-
-deleteAccount(accountID)
-{
-   this.accounts = this.accounts.filter(function(account)
-   {
-        return account.id != accountID
-   })
-}
-
-getAccounts()
-{
-   return this.accounts
-}
-
-}
-
-export default Account
+export default Account;

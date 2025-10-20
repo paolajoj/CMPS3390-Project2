@@ -1,48 +1,51 @@
 import { Link } from 'react-router-dom'
 import '../App.css'
-import { useState } from 'react'
-
-function getSavedBackColor()
-{
-    return localStorage.getItem("backgroundColor")
-}
-
-function getSavedFont()
-{
-    return localStorage.getItem("fontFamily")
-}
-
-function saveBackColor()
-{
-    return localStorage.setItem("backgroundColor", val)
-}
-
-function saveFont()
-{
-    return localStorage.setItem("fontfamily", val)
-}
-
-
+import { useState, useEffect} from 'react'
 
 export default function Settings() {
+    const userId = 1
 
-	const[backColor, setBackColor] = useState(getSavedBackColor)
-	const[font, setFont] = useState(getSavedFont)
+    const [backColor, setBackColor] = useState('white')
+    const [font, setFont] = useState('Arial')
 
-	function backgroundChange(event)
-	{
-       const val = event.target.value
-       setBackColor(val)
-       localStorage.setItem("backgroundColor", val)
+    useEffect(() => {
+        fetch(`http://localhost:3001/api/accounts/${userId}`)
+            .then((res) => res.json())
+            .then((data) => {
+                if (data.background_color) setBackColor(data.background_color)
+                if (data.font_family) setFont(data.font_family)
+                document.body.style.backgroundColor = data.background_color || 'white'
+                document.body.style.fontFamily = data.font_family || 'Arial'
+            })
+            .catch((err) => console.error('Failed to load settings:', err));
+    }, []);
+
+    function backgroundChange(event) {
+        const val = event.target.value
+        setBackColor(val)
+        document.body.style.backgroundColor = val
+
+        fetch(`http://localhost:3001/api/accounts/${userId}`,
+            {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ background_color: val }),
+            })
+        }
+        
+        function fontChange(event){
+            const val = event.target.value
+            
+            setFont(val)
+
+        document.body.style.fontFamily = val
+
+        fetch(`http://localhost:3001/api/accounts/${userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ font_family: val }),
+        })
     }
-
-    function fontChange(event)
-    {
-       const val = event.target.value
-       setFont(val)
-       localStorage.setItem("fontFamily", val)
-    }
-
 
 	return (
             <div

@@ -4,7 +4,7 @@ import {db} from "../db.js";
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  db.query("SELECT * FROM transactions", (err) => {
+  db.query("SELECT * FROM transactions", (err, results) => {
     if (err) return res.status(500).json({error: err});
     res.json(results);
   });
@@ -15,8 +15,7 @@ router.post("/", (req, res) => {
   db.query(
     "INSERT INTO transactions (account_id, type, amount, description) VALUES (?, ?, ?, ?)",
     [account_id, type, amount, description],
-    (err, results);
-    => {
+    (err, results) => {
       if (err) return res.status(500).json({ error: err });
       res.json({ id: results.insertId, account_id, type, amount, description });
     });
@@ -25,10 +24,10 @@ router.post("/", (req, res) => {
 
 
 router.delete("/:id", (req, res) => {
-  const id = req.params.id;
-  db.query("DELETE FROM transactions WHERE id = ?", id, (err, result) => {
-    if (!err) return res.status(500).json({error: err});
-    res.send({message: "Transaction has been deleted" });
+  const {id} = req.params;
+  db.query("DELETE FROM transactions WHERE id = ?", [id], (err) => {
+    if (err) return res.status(500).json({error: err});
+    res.json({message: "Transaction has been deleted" });
   });
 }
 );

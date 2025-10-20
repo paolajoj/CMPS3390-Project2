@@ -1,94 +1,87 @@
 import { Link } from 'react-router-dom'
 import '../App.css'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Account from '../Models/Account.js'
 
-const accountManage = new Account()
+const accountManage = new Account();
 
 
 export default function Home() {
-    const [accounts, setAccounts] = useState(accountManage.getAccounts())
+    const [accounts, setAccounts] = useState([]);
     const [accountName, setAccountName] = useState("")
     const [selectedAccount, setSelectedAccount] = useState("")
+    
+    useEffect(() => {
+      loadAccounts();
+   }, []);
+   
+   async function loadAccounts()
+   {
+      const data = await accountManage.getAccounts();
+      setAccounts(data);
+   }
 
-    function handleAccountChange(event)
-    {
-       setAccountName(event.target.value)
-    }
+   async function createAccount(){
+      const data = await accountManage.getAccounts();
+      setAccounts(data);
+   }
 
-    function handleAccountSelect(event)
-    {
-       setSelectedAccount(event.target.value)
-    }
+   async function createAccount()
+   {
+      if (!accountName.trim()) {
+         alert("You need to type an account name");
+         return;
+      }
+      await accountManage.createAccount(accountName);
+      setAccountName("");
+      loadAccounts();
+   }
 
-    function createAccount()
-    {
-       if (accountName == "")
-       {
-           alert("You need to type an account name")
-           return
-       }
-       accountManage.createAccount(accountName)
-       setAccounts(accountManage.getAccounts())
-       setAccountName("")
+   async function deleteAccount(){
+      if (!SelectedAccount)
+      {
+         alert("Please select an account to delete!");
+         return;
+      }
+      await accountManage.deleteAccount(selectedAccount);
+      loadAccounts();
+   }
 
-    }
-
-    function deleteAccount()
-    {
-
-       if (accountName == "")
-       {
-           alert("You need to type an account name")
-           return
-
-       }
-
-       accountManage.deleteAccount(selectedAccount)
-       setAccounts(accountManage.getAccounts())
-       setAccountName("")
-    }
-
-    function AccountOptions()
-    {
-       const options = accounts.map(function(account)
-       {
-          return <option key = {account.id} value = {account.id}> {account.name} </option>
-       })
-
-       return options
-    }
-
-
-	return (
-			<div className="home">
-			<h1 className="title">Finance Tracker Home Page</h1>
-			<div className="links">
-			<Link to="/history" className="link">History</Link>
-			<Link to="/transactions" className="link">Transactions</Link>
-			<Link to="/settings" className="link">Settings</Link>
-			<Link to="/add" className="link">Add Transactions</Link>
-			</div>
-			{/* Account  */}
-			<div className = "account">
-			<input type = "text"
-			value = {accountName}
-			onChange = {handleAccountChange}
-			placeholder = "Account name here"
-			/>
-            <button onClick = {createAccount}> Create account </button>
-            <button onClick = {deleteAccount}> Delete account </button>
-			</div>
-	{/* Account selection*/}
-	<div className="account-select">
-            <label>
-                Account :
-           <select value = {selectedAccount} onChange = {handleAccountSelect}>
-               <option value = ""> Select Account </option>
-               {AccountOptions()}
-            </select>
+   return(
+   <div className="home">
+      <h1 className="title">Finance Tracker Home Page</h1>
+      <div className="links">
+         
+        <Link to="/history" className="link">History</Link>
+        <Link to="/transactions" className="link">Transactions</Link>
+        <Link to="/settings" className="link">Settings</Link>
+        <Link to="/add" className="link">Add Transactions</Link>
+      </div>
+      
+      <div className="account">
+         <input
+         type="text"
+         value={accountName}
+         onChange={(e) => setAccountName(e.target.value)}
+         placeholder="Account name here"
+         />
+         
+         <button onClick={createAccount}>Create account</button>
+         <button onClick={deleteAccount}>Delete account</button>
+         </div>
+         
+         <div className="account-select">
+            <label>Account:
+               <select value={selectedAccount} onChange={(e) => setSelectedAccount(e.target.value)}>
+                  <option value="">Select Account</option>
+                  {accounts.map((account) => (
+                     <option key={account.id} value={account.id}>
+                        {account.name}
+                     </option>
+                  ))}
+               </select>
             </label>
-			</div>
-			</div>
-	       )
+         </div>
+      </div>
+   );
 }
