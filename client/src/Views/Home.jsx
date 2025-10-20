@@ -28,7 +28,7 @@ export default function Home() {
 
    async function createAccount()
    {
-      if (!accountName.trim()) {
+      if (!accountName) {
          alert("You need to type an account name");
          return;
       }
