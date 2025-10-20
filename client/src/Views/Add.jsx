@@ -1,42 +1,97 @@
 import { Link } from 'react-router-dom'
 import React, {useState, useEffect} from 'react'
 import '../App.css'
+import Transactions from '../Models/Transactions.js'
 
-export default function Transactions() {
+const model = new Transactions()
+
+
+export default function Add() {
 	const [transactions, setTransactions] = useState([])
 	const [amount, setAmount] = useState('')
-	const [description, setDescription] = useState('')
+	const [name, setName] = useState('')
 	const [type, setType] = useState('Expense')
-// Load saved transactions
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('transactions') || '[]')
-    setTransactions(saved)
-  }, [])
 
-  // Save transactions to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('transactions', JSON.stringify(transactions))
-  }, [transactions])
 
-  // Add a new transaction
-  const addTransaction = () => {
-    if (!amount || !description) {
-      alert('Please fill out both fields.')
-      return
+
+	function amountChange(event)
+	{
+       setAmount(event.target.value)
     }
-    const newTransaction = { amount, description, type}
-    setTransactions([...transactions, newTransaction])
-    setAmount('')
-    setDescription('')
-    setType('Expense')
-  }
 
-  // Delete a transaction
-  const deleteTransaction = (index) => {
-    const updated = transactions.filter((_, i) => i !== index)
-    setTransactions(updated)
-  }
+    function nameChange(event)
+    {
+       setName(event.target.value)
+    }
 
+    function typeChange(event)
+    {
+       setType(event.target.value)
+    }
+
+
+	function addTransaction()
+	{
+       if (!name)
+       {
+          alert("You need to type an description");
+          return;
+       }
+
+       if (!amount)
+       {
+           alert("You need to type an amount");
+           return;
+       }
+
+       model.createTransaction(amount, name, type)
+       setTransactions([...model.getTransactions()])
+       setAmount("")
+       setName("")
+       setType("Expense")
+    }
+
+    function deleteTransaction(id)
+    {
+       model.deleteTransaction(id)
+       setTransactions([...model.getTransactions()])
+    }
+
+    function transactionDisplay(element)
+    {
+      return(
+
+        <li key = {element.id}
+        style =
+        {{
+          marginBottom: "5px",
+          display: "flex",
+          gap: "1rem"
+        }}
+        >
+        <strong>${element.amount} </strong> - {element.name}
+        <span
+        style =
+        {{
+          color: element.type == "Income" ? "green" : "red",
+          fontWeight: "bold"
+        }}
+        >
+        {element.type}
+        </span>
+        <button
+        style =
+        {{
+           marginLeft: "10px"
+        }}
+        onClick = {function () {deleteTransaction(element.id)}}
+        >
+        Delete
+        </button>
+        </li>
+
+      )
+    }
 
 return (
     <div className="home">
@@ -52,7 +107,7 @@ return (
       {/* type */}
 	<select 
 	  value={type}
-          onChange={(e) => setType(e.target.value)}
+          onChange={typeChange}
    	  style={{ padding: '0.5rem', borderRadius: '5px'}}
 	 >
 	     <option value ="Expense">Expense</option>
@@ -62,13 +117,13 @@ return (
           type="number"
           placeholder="Amount"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={amountChange}
         />
         <input
           type="text"
           placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          value={name}
+          onChange={nameChange}
         />
         <button onClick={addTransaction}>Add Transaction</button>
       </div>
@@ -80,32 +135,7 @@ return (
           <p>No transactions yet.</p>
         ) : (
           <ul style={{ listStyle: 'none', padding: 0 }}>
-            {transactions.map((t, index) => (
-              <li 
-		 key={index} 
-		 style={{ 
-		 marginBottom: '5px',
-		 display: 'flex',
-		 gap: '1rem'
-		}}>
-                 <strong>${t.amount}</strong> — {t.description}
-               <span 
-		style={{
-	    	  color: t.type === 'Income' ? 'green' : 'red',
-		  fontWeight: 'bold',
-	        }}
-		>
-	 	   {t.type} 
-		</span>
-		
-	       <button
-                  style={{ marginLeft: '10px' }}
-                  onClick={() => deleteTransaction(index)}
-                >
-                  Delete
-                </button>
-              </li>
-            ))}
+            {transactions.map(transactionDisplay)}
           </ul>
         )}
       </div>
