@@ -11,11 +11,11 @@ export default function Add() {
 	const [amount, setAmount] = useState('')
 	const [name, setName] = useState('')
 	const [type, setType] = useState('Expense')
+	const [editingId, setEditingId] = useState(null);
 
 
-
-	function amountChange(event)
-	{
+   function amountChange(event)
+    {
        setAmount(event.target.value)
     }
 
@@ -43,13 +43,28 @@ export default function Add() {
            alert("You need to type an amount");
            return;
        }
+	if (editingId) {
+		//editing existing transactions(editingId, {amount, name, type})
+		setEditingId(null)
+	} else { 
+		model.createTransaction(amount, name, type)
+	}
 
-       model.createTransaction(amount, name, type)
+       {/*model.createTransaction(amount, name, type)*/}
        setTransactions([...model.getTransactions()])
        setAmount("")
        setName("")
        setType("Expense")
     }
+    function editTransaction(id) {
+	const transaction = model.getTransactions().find(t => t.id === id)
+	if (transaction) {
+		setAmount(transaction.amount)
+		setName(transaction.name)
+		setType(transaction.type)
+		setEditingId(id)
+	}
+}
 
     function deleteTransaction(id)
     {
@@ -125,8 +140,11 @@ return (
           value={name}
           onChange={nameChange}
         />
-        <button onClick={addTransaction}>Add Transaction</button>
-      </div>
+        <button onClick={addTransaction}>
+	{editingId ? "Save changes" : "Add Transaction"}
+	</button>
+      		
+	</div>
 
       {/* Display Transactions */}
       <div className="transaction-list" style={{ marginTop: '2rem' }}>
@@ -134,9 +152,31 @@ return (
         {transactions.length === 0 ? (
           <p>No transactions yet.</p>
         ) : (
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {transactions.map(transactionDisplay)}
-          </ul>
+
+	<ul style={{ listStyle: 'none', padding: 0 }}>
+          {transactions.map(t => (
+            <li key={t.id} style={{ marginBottom: '0.5rem' }}>
+              ${t.amount} — {t.name} ({t.type})
+              <button
+                style={{ marginLeft: '0.5rem' }}
+                onClick={() => editTransaction(t.id)}
+              >
+                Edit
+              </button>
+              <button
+                style={{ marginLeft: '0.5rem' }}
+                onClick={() => deleteTransaction(t.id)}
+              >
+
+
+
+          {/*<ul style={{ listStyle: 'none', padding: 0 }}>
+            {transactions.map(transactionDisplay)}*/}
+        Delete 
+	</button>
+	</li>
+	))}  
+	</ul>
         )}
       </div>
     </div>
