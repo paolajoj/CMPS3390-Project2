@@ -67,10 +67,10 @@ export default function Settings() {
 			<div>
                 <label> Choose background color: </label>
                 <select value = {backColor} onChange = {backgroundChange}>
-                    <option value = "red"> Red </option>
+                    <option value = "#f77474"> Red </option>
                     <option value = "white"> White </option>
-                    <option value = "green"> Green </option>
-                    <option value = "blue"> Blue </option>
+                    <option value = "#95fcbe"> Green </option>
+                    <option value = "#75bdd9"> Blue </option>
                 </select>
             </div>
             <div>

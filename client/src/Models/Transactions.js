@@ -22,7 +22,19 @@ class Transactions{
       this.transactions = [...this.transactions, newTransaction]
 
    }
-
+   updateTrasactions(id, data) {
+     this.transactins = this.transactins.map((t) => {
+	if(t.id === id) {
+	  return {
+	     ...t,
+	     amount: data.amount,
+	     name: data.name.trim(),
+	     type: data.type,
+	     };
+}	
+	return t; 
+});
+}
 
    deleteTransaction(id)
    {
