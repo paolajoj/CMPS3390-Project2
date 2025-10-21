@@ -5,142 +5,146 @@ import "../App.css";
 export default function Add() {
   const [transactions, setTransactions] = useState([]);
   const [amount, setAmount] = useState("");
-  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [type, setType] = useState("Expense");
-  const [editingId, setEditingId] = useState(null);
+  const [accountId, setAccountId] = useState(null);
 
-  // Load transactions from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem("transactions");
-    if (stored) setTransactions(JSON.parse(stored));
+    const storedId = localStorage.getItem("selectedAccount");
+    if (storedId && storedId !== "null" && storedId !== "") {
+      setAccountId(Number(storedId));
+    }
   }, []);
 
-  // Save transactions to localStorage
   useEffect(() => {
-    localStorage.setItem("transactions", JSON.stringify(transactions));
-  }, [transactions]);
+    if (accountId) {
+      loadTransactions();
+    }
+  }, [accountId]);
 
-  const amountChange = (e) => setAmount(e.target.value);
-  const nameChange = (e) => setName(e.target.value);
-  const typeChange = (e) => setType(e.target.value);
-
-  const addOrUpdateTransaction = () => {
-    if (!name) return alert("You need to type a description");
-    if (!amount) return alert("You need to type an amount");
-
-    if (editingId) {
-      setTransactions(
-        transactions.map((t) =>
-          t.id === editingId ? { ...t, name, amount, type } : t
-        )
+  async function loadTransactions() {
+    try {
+      const res = await fetch("http://localhost:3001/api/transactions");
+      const data = await res.json();
+      const filtered = data.filter(
+        (t) => Number(t.account_id) === Number(accountId)
       );
-      setEditingId(null);
-    } else {
-      const newTransaction = {
-        id: Date.now(),
-        name,
-        amount,
-        type,
-      };
-      setTransactions([...transactions, newTransaction]);
+      setTransactions(filtered);
+    } catch (err) {
+      console.error("Error loading transactions:", err);
+    }
+  }
+
+  async function addTransaction() {
+    if (!accountId) {
+      alert("No account selected! Please select one on the Home page first.");
+      return;
+    }
+    if (!amount || !description) {
+      alert("Please fill out all fields.");
+      return;
     }
 
-    setName("");
-    setAmount("");
-    setType("Expense");
-  };
+    try {
+      const res = await fetch("http://localhost:3001/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          account_id: accountId,
+          type,
+          amount,
+          description,
+        }),
+      });
 
-  const editTransaction = (t) => {
-    setName(t.name);
-    setAmount(t.amount);
-    setType(t.type);
-    setEditingId(t.id);
-  };
+      const data = await res.json();
+      setTransactions([...transactions, data]);
+      setAmount("");
+      setDescription("");
+      setType("Expense");
+    } catch (err) {
+      console.error("Error adding transaction:", err);
+    }
+  }
 
-  const deleteTransaction = (id) => {
-    setTransactions(transactions.filter((t) => t.id !== id));
-  };
+  async function deleteTransaction(id) {
+    try {
+      await fetch(`http://localhost:3001/api/transactions/${id}`, {
+        method: "DELETE",
+      });
+      setTransactions((prev) =>
+        prev.filter((t) => Number(t.id) !== Number(id))
+      );
+    } catch (err) {
+      console.error("Error deleting transaction:", err);
+    }
+  }
 
-  const isPositiveType = (t) => ["Income", "Investment", "Savings"].includes(t.type);
-
-  const total = transactions.reduce((acc, t) => {
-    return isPositiveType(t) ? acc + parseFloat(t.amount) : acc - parseFloat(t.amount);
-  }, 0);
+  if (!accountId) {
+    return (
+      <div className="home">
+        <h1 className="title">Finance Tracker - Add Transactions</h1>
+        <p style={{ marginTop: "2rem" }}>
+          No account selected! Go back to Home and pick one.
+        </p>
+        <div className="links">
+          <Link to="/" className="link">
+            Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home">
-      <h1 className="title">Finance Tracker</h1>
+      <h1 className="title">Finance Tracker - Add Transactions</h1>
 
       <div className="links">
-        <Link to="/" className="link">Home</Link>
+        <Link to="/" className="link">
+          Home
+        </Link>
       </div>
 
-      {/* Total Balance */}
-      <div style={{ marginTop: "1rem", fontSize: "1.2rem", fontWeight: "bold" }}>
-        Total Balance: <span style={{ color: total >= 0 ? "green" : "red" }}>
-          ${total.toFixed(2)}
-        </span>
-      </div>
-
-      {/* Add Transaction Section */}
       <div className="account" style={{ marginTop: "1rem" }}>
-        <select value={type} onChange={typeChange} style={{ padding: "0.5rem", borderRadius: "5px" }}>
+        <select value={type} onChange={(e) => setType(e.target.value)}>
           <option value="Expense">Expense</option>
           <option value="Income">Income</option>
-          <option value="Investment">Investment</option>
-          <option value="Savings">Savings</option>
-          <option value="Other">Other</option>
         </select>
+
         <input
           type="number"
           placeholder="Amount"
           value={amount}
-          onChange={amountChange}
+          onChange={(e) => setAmount(e.target.value)}
         />
+
         <input
           type="text"
           placeholder="Description"
-          value={name}
-          onChange={nameChange}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
-        <button onClick={addOrUpdateTransaction}>
-          {editingId ? "Save Changes" : "Add Transaction"}
-        </button>
+
+        <button onClick={addTransaction}>Add Transaction</button>
       </div>
 
-      {/* Transactions Table */}
-      <div className="transaction-table" style={{ marginTop: "2rem" }}>
+      <div className="transaction-list" style={{ marginTop: "2rem" }}>
+        <h3>Transactions for {localStorage.getItem("selectedAccountName") || `Account #${accountId}`}</h3>
+
+
         {transactions.length === 0 ? (
           <p>No transactions yet.</p>
         ) : (
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
-            <thead>
-              <tr>
-                <th style={{ borderBottom: "2px solid #000" }}>Type</th>
-                <th style={{ borderBottom: "2px solid #000" }}>Amount</th>
-                <th style={{ borderBottom: "2px solid #000" }}>Description</th>
-                <th style={{ borderBottom: "2px solid #000" }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((t) => {
-                const isPositive = isPositiveType(t);
-                return (
-                  <tr key={t.id}>
-                    <td style={{ textAlign: "center" }}>{t.type}</td>
-                    <td style={{ color: isPositive ? "green" : "red", textAlign: "right" }}>
-                      {isPositive ? "+" : "-"}${parseFloat(t.amount).toFixed(2)}
-                    </td>
-                    <td>{t.name}</td>
-                    <td>
-                      <button onClick={() => editTransaction(t)}>Edit</button>
-                      <button onClick={() => deleteTransaction(t.id)}>Delete</button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <ul>
+            {transactions.map((t) => (
+              <li key={t.id}>
+                <strong>${t.amount}</strong> — {t.description} ({t.type})
+                <button
+                  style={{ marginLeft: "10px" }}
+                  onClick={() => deleteTransaction(t.id)}>Delete</button></li>
+            ))}
+          </ul>
         )}
       </div>
     </div>
