@@ -32,4 +32,24 @@ router.delete("/:id", (req, res) => {
 }
 );
 
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const {account_id, type, amount, description } = req.body;
+
+  console.log("Updating:", id, type, amount, description);
+
+
+  db.query(
+    "UPDATE transactions SET account_id = ?, type = ?, amount = ?, description = ? WHERE id = ?",
+    [account_id, type, amount, description, id],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err });
+      if (result.affectedRows === 0)
+        return res.status(404).json({ error: "Transaction not found" });
+
+      res.json({ id, account_id, type, amount, description });
+    }
+  );
+});
+
 export default router;

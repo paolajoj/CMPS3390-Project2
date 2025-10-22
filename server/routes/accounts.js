@@ -65,4 +65,28 @@ router.delete("/:id", (req, res) => {
   });
 });
 
+router.get("/:id", (req, res) => {
+  const { id } = req.params;
+  db.query("SELECT * FROM accounts WHERE id = ?", [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results[0]);
+  });
+});
+
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const { background_color, font_family } = req.body;
+
+  db.query(
+    "UPDATE accounts SET background_color = ?, font_family = ? WHERE id = ?",
+    [background_color, font_family, id],
+    (err, results) => {
+      if (err) return res.status(500).json({ error: err });
+      res.json({ message: "Account settings updated successfully" });
+    }
+  );
+});
+
+
+
 export default router;

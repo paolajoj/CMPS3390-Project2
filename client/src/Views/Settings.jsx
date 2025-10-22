@@ -67,10 +67,16 @@ export default function Settings() {
 			<div>
                 <label> Choose background color: </label>
                 <select value = {backColor} onChange = {backgroundChange}>
+
+                    
                     <option value = "#f77474"> Red </option>
                     <option value = "white"> White </option>
                     <option value = "#95fcbe"> Green </option>
                     <option value = "#75bdd9"> Blue </option>
+                    <option value="yellow">Yellow</option>
+                    <option value="purple">Purple</option>
+                    <option value="gray">Gray</option>
+
                 </select>
             </div>
             <div>
@@ -78,6 +84,10 @@ export default function Settings() {
                 <select value = {font} onChange = {fontChange}>
                     <option value = "Arial"> Arial </option>
                     <option value = "Courier"> Courier </option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Verdana">Verdana</option>
+
                 </select>
             </div>
             </div>

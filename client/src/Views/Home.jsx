@@ -15,6 +15,22 @@ export default function Home(){
     useEffect(() =>{
       loadAccounts();
    }, []);
+
+   //useEffect(() => {
+   //const applyStyle = async () => {
+    //const id = localStorage.getItem("selectedAccount");
+    //if (!id) return;
+
+    //const res = await fetch(`http://localhost:3001/api/accounts/${id}`);
+    //const data = await res.json();
+
+    //document.body.style.backgroundColor = data.background_color || "white";
+    //document.body.style.fontFamily = data.font_family || "Arial";
+  //};
+
+  //applyStyle();
+//}, [localStorage.getItem("selectedAccount")]);
+
    
    async function loadAccounts()
    {
@@ -58,40 +74,39 @@ export default function Home(){
 
 
    return(
-
-   <div className="home">
-      <h1 className="title">Finance Tracker Home Page</h1>
-      
-      <div className="account">
-         <input
-         type="text"
-         value={accountName}
-         onChange={(e) => setAccountName(e.target.value)}
-         placeholder="Account name here"/>
+      <div className="home">
+         <h1 className="title">Finance Tracker Home Page</h1>
          
-         <button onClick={createAccount}>Create account</button>
-         <button onClick={deleteAccount}>Delete account</button>
-         </div>
-         
-         <div className="account-select">
-
-            <label>Choose an Account: <select value={selectedAccount} onChange={handleSelectChange}>
+         <div className="account">
+            <div className="account-select">
+               <label>Choose an Account: <select value={selectedAccount} onChange={handleSelectChange}>
                   <option value="">Select Account</option>
                   {accounts.map((account) => (
                      <option key={account.id} value={account.id}>
                         {account.name}
-                     </option>
-                  ))}
-               </select>
-            </label>
-         </div>
-      <div className="links">
-         
-        <Link to="/history" className="link">History</Link>
-        <Link to="/transactions" className="link">Transactions</Link>
-        <Link to="/settings" className="link">Settings</Link>
-        <Link to="/add" className="link">Add Transactions</Link>
-         </div>
-      </div>
-   );
-}
+                        </option>
+                     ))}
+                     </select>
+                     </label>
+                     </div>
+                     <input
+                     type="text"
+                     value={accountName}
+                     onChange={(e) => setAccountName(e.target.value)}
+                     placeholder="Account name here"/>
+                     <button onClick={createAccount}>Create account</button>
+                     <button onClick={deleteAccount}>Delete account</button>
+                     </div>
+                     <div className="links-container">
+                        <h2 className = "HTitle">Account menu</h2>
+                        <div className="links">
+                           
+                           <Link to="/add" className="link">Add Transactions</Link>
+                           <Link to="/history" className="link">History</Link>
+                           <Link to="/settings" className="link">Settings</Link>
+                           {/*<Link to="/transactions" className="link">Transactions</Link>*/}
+                     </div>
+                     </div>
+                     </div>
+                     );
+                  }
