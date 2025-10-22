@@ -19,7 +19,7 @@ class Account
 
 
   async deleteAccount(id){
-    await fetch("http://localhost:3001/api/accounts/${id}",{
+    await fetch(`http://localhost:3001/api/accounts/${id}`,{
       method: "DELETE",
     });
   }
