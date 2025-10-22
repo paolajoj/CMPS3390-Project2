@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "./Views/Home";
 import History from "./Views/History";
-import Transactions from "./Views/Transactions";
 import Settings from "./Views/Settings";
 import Add from "./Views/Add";
 
@@ -24,7 +23,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/history" element={<History />} />
-        <Route path="/transactions" element={<Transactions />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/add" element={<Add />} />
       </Routes>
